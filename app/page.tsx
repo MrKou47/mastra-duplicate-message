@@ -13,7 +13,7 @@ export default function Chat() {
   );
 
   const { messages, sendMessage, status, setMessages } = useChat({
-    messages: [] as UIMessage[],
+    messages: initialMessages,
   });
 
   // Update messages when initialMessages loads
@@ -24,6 +24,8 @@ export default function Chat() {
   }, [initialMessages, setMessages]);
 
   const [input, setInput] = useState("");
+
+  console.log('messsages', messages)
 
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
@@ -45,6 +47,9 @@ export default function Chat() {
             if (p.type === "text") {
               return <span key={i}>{p.text}</span>;
             }
+            if(p.type === 'reasoning') {
+              return <span key={i} style={{ color: 'gray' }}>Reasoning: {p.text}</span>;
+            }
             return null;
           })}
         </div>
@@ -53,7 +58,7 @@ export default function Chat() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (inputData.trim()) {
+          if (input.trim()) {
             sendMessage({ text: input });
             setInput("");
           }
