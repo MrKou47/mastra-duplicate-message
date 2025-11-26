@@ -2,9 +2,9 @@
 
 import { UIMessage, useChat } from "@ai-sdk/react";
 import useSWR from "swr";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url).then((res) => res.json()).then(res => res as UIMessage[]);
 
 export default function Chat() {
   const { data: initialMessages = [] } = useSWR<UIMessage[]>(
@@ -26,6 +26,10 @@ export default function Chat() {
   const [input, setInput] = useState("");
 
   console.log('messsages', messages)
+
+  function onChange(e) {
+    setInput(e.target.value)
+  }
 
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
@@ -68,7 +72,7 @@ export default function Chat() {
           className="fixed dark:bg-zinc-900 bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
           value={input}
           placeholder="Ask about the weather..."
-          onChange={(e) => setInput(e.target.value)}
+          onChange={onChange}
           disabled={status !== "ready"}
         />
       </form>
