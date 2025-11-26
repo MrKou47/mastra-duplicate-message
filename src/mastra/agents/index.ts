@@ -1,11 +1,9 @@
 import { Agent } from "@mastra/core/agent";
-import { openai } from "@ai-sdk/openai";
 
 import { weatherTool } from "../tools";
 import { Memory } from "@mastra/memory";
 import { LibSQLStore } from "@mastra/libsql";
 import { createModel } from "../create-model";
-import { glmConfig } from "../create-model";
 
 export const memory = new Memory({
   storage: new LibSQLStore({
@@ -35,7 +33,8 @@ export const weatherAgent = new Agent({
       Use the weatherTool to fetch current weather data.
 
 `,
-  model: createModel(glmConfig),
+  model: 'alibaba-cn/deepseek-r1',
+  // model: createModel(glmConfig),
   tools: {
     weatherTool,
   },
