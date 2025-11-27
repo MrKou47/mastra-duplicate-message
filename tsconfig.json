@@ -7,7 +7,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "./*"
+      ]
     },
     "target": "ES2020",
     "strict": true,
@@ -34,11 +36,22 @@
     "declaration": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "lib": ["ES2021"],
+    "lib": [
+      "ES2021"
+    ],
     "esModuleInterop": true,
     "moduleResolution": "NodeNext",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "noEmit": true,
+    "isolatedModules": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
