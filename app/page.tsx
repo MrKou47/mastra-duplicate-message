@@ -10,6 +10,10 @@ export default function Chat() {
   const { data: initialMessages = [] } = useSWR<UIMessage[]>(
     "/api/initial-chat",
     fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
   const { messages, sendMessage, status, setMessages } = useChat({
