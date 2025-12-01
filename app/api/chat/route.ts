@@ -1,11 +1,16 @@
 import { mastra } from "@/src/mastra";
-import { toAISdkStream } from '@mastra/ai-sdk'
-import { createUIMessageStreamResponse, createUIMessageStream } from 'ai'
+import {
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  InferUIMessageChunk,
+  UIMessage,
+} from "ai";
+import { toAISdkStream } from "@mastra/ai-sdk";
+import { ReadableStream } from "node:stream/web";
 
 const myAgent = mastra.getAgent("weatherAgent");
 export async function POST(req: Request) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { messages } = await req.json() as { messages: any[] }
+  const { messages } = await req.json() as unknown as { messages: UIMessage[] };
 
   const stream = await myAgent.stream(messages, {
     memory: {
@@ -14,19 +19,33 @@ export async function POST(req: Request) {
     },
   });
 
+  console.log('messages', JSON.stringify(messages))
+
+  let lastMessageId: string | undefined;
+  if (
+    messages.length > 0 &&
+    messages[messages.length - 1].role === "assistant"
+  ) {
+    lastMessageId = messages[messages.length - 1].id;
+  }
+
   const uiMessageStream = createUIMessageStream({
     originalMessages: messages,
     execute: async ({ writer }) => {
       for await (const part of toAISdkStream(stream, {
-        from: 'agent',
-      })) {
+        from: "agent",
+        lastMessageId,
+        sendStart: true,
+        sendFinish: true,
+        sendReasoning: true,
+        sendSources: true,
+      }) as ReadableStream<InferUIMessageChunk<UIMessage>>) {
         writer.write(part);
       }
     },
   });
-  const response = createUIMessageStreamResponse({
+
+  return createUIMessageStreamResponse({
     stream: uiMessageStream,
   });
-
-  return response;
 }
