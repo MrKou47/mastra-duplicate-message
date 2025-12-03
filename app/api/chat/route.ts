@@ -5,7 +5,7 @@ import {
   InferUIMessageChunk,
   UIMessage,
 } from "ai";
-import { toAISdkFormat, toAISdkStream } from "@mastra/ai-sdk";
+import { toAISdkFormat } from "@mastra/ai-sdk";
 import { ReadableStream } from "node:stream/web";
 
 const myAgent = mastra.getAgent("weatherAgent");
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   const uiMessageStream = createUIMessageStream({
     originalMessages: messages,
     execute: async ({ writer }) => {
-      for await (const part of toAISdkStream(stream, {
+      for await (const part of toAISdkFormat(stream, {
         from: "agent",
         lastMessageId,
         sendStart: true,
