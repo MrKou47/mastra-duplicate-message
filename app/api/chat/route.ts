@@ -7,12 +7,15 @@ import {
 } from "ai";
 import { toAISdkFormat } from "@mastra/ai-sdk";
 import { ReadableStream } from "node:stream/web";
+import { NextResponse } from "next/server";
 
 const myAgent = mastra.getAgent("weatherAgent");
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const stream = await myAgent.stream(messages, {
+  const lastMessage = messages[messages.length - 1];
+
+  const stream = await myAgent.stream(lastMessage, {
     memory: {
       thread: "2",
       resource: "1",
